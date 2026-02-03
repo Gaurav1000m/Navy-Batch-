@@ -1,1 +1,92 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Navy 01/2026 Batch 😎</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        form { margin-bottom: 20px; }
+        .poll { margin: 20px 0; }
+        button { margin: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Welcome to Navy 01/2026 Batch 😎</h1>
+    <p>Share your joining details and create/vote on polls!</p>
+    
+    <!-- Joining Details Form -->
+    <h2>Submit Your Joining Details</h2>
+    <form id="joinForm">
+        <label>Joining Date: <input type="date" id="joinDate" required></label><br>
+        <label>State: 
+            <select id="state" required>
+                <option value="">Select State</option>
+                <option value="AL">Alabama</option>
+                <option value="AK">Alaska</option>
+                <!-- Add all 50 states here for completeness -->
+                <option value="WY">Wyoming</option>
+            </select>
+        </label><br>
+        <button type="submit">Submit</button>
+    </form>
+    <div id="submissions"></div>
+    
+    <!-- Poll Creator -->
+    <h2>Create a Poll</h2>
+    <form id="pollForm">
+        <label>Poll Question: <input type="text" id="pollQuestion" required></label><br>
+        <label>Option 1: <input type="text" id="option1" required></label><br>
+        <label>Option 2: <input type="text" id="option2" required></label><br>
+        <button type="submit">Create Poll</button>
+    </form>
+    <div id="polls"></div>
+    
+    <script>
+        let submissions = [];
+        let polls = [];
+        
+        // Handle joining form
+        document.getElementById('joinForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const date = document.getElementById('joinDate').value;
+            const state = document.getElementById('state').value;
+            submissions.push({ date, state });
+            updateSubmissions();
+            this.reset();
+        });
+        
+        function updateSubmissions() {
+            const div = document.getElementById('submissions');
+            div.innerHTML = '<h3>Recent Submissions</h3>' + submissions.map(s => `<p>Joining: ${s.date}, State: ${s.state}</p>`).join('');
+        }
+        
+        // Handle poll form
+        document.getElementById('pollForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const question = document.getElementById('pollQuestion').value;
+            const opt1 = document.getElementById('option1').value;
+            const opt2 = document.getElementById('option2').value;
+            polls.push({ question, options: [opt1, opt2], votes: [0, 0] });
+            updatePolls();
+            this.reset();
+        });
+        
+        function updatePolls() {
+            const div = document.getElementById('polls');
+            div.innerHTML = polls.map((poll, i) => `
+                <div class="poll">
+                    <h4>${poll.question}</h4>
+                    <button onclick="vote(${i}, 0)">${poll.options[0]} (${poll.votes[0]})</button>
+                    <button onclick="vote(${i}, 1)">${poll.options[1]} (${poll.votes[1]})</button>
+                </div>
+            `).join('');
+        }
+        
+        function vote(pollIndex, optionIndex) {
+            polls[pollIndex].votes[optionIndex]++;
+            updatePolls();
+        }
+    </script>
+</body>
+</html>
